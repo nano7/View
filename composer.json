@@ -28,7 +28,7 @@
     "extra": {
         "nano7": {
             "providers": [
-                "Nano7\\View\\ViewServiceProviders"
+                "Nano7\\View\\ViewServiceProvider"
             ]
         }
     },
