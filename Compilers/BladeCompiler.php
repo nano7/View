@@ -1,5 +1,8 @@
 <?php namespace Nano7\View\Compilers;
 
+use Nano7\Foundation\Support\Arr;
+use Nano7\Foundation\Support\Str;
+
 class BladeCompiler extends Compiler implements CompilerInterface {
 
 	/**
@@ -8,6 +11,13 @@ class BladeCompiler extends Compiler implements CompilerInterface {
 	 * @var array
 	 */
 	protected $extensions = array();
+
+    /**
+     * All custom "directive" handlers.
+     *
+     * @var array
+     */
+    protected $customDirectives = [];
 
 	/**
 	 * The file currently being compiled.
@@ -250,8 +260,9 @@ class BladeCompiler extends Compiler implements CompilerInterface {
 	{
 		$callback = function($match)
 		{
-			if (method_exists($this, $method = 'compile'.ucfirst($match[1])))
-			{
+            if (isset($this->customDirectives[$match[1]])) {
+                $match[0] = $this->callCustomDirective($match[1], Arr::get($match, 3));
+            } elseif (method_exists($this, $method = 'compile'.ucfirst($match[1]))) {
 				$match[0] = $this->$method(array_get($match, 3));
 			}
 
@@ -260,6 +271,22 @@ class BladeCompiler extends Compiler implements CompilerInterface {
 
 		return preg_replace_callback('/\B@(\w+)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \))?/x', $callback, $value);
 	}
+
+    /**
+     * Call the given directive with the given value.
+     *
+     * @param  string  $name
+     * @param  string|null  $value
+     * @return string
+     */
+    protected function callCustomDirective($name, $value)
+    {
+        if (Str::startsWith($value, '(') && Str::endsWith($value, ')')) {
+            $value = Str::substr($value, 1, -1);
+        }
+
+        return call_user_func($this->customDirectives[$name], trim($value));
+    }
 
 	/**
 	 * Compile the "raw" echo statements.
@@ -809,4 +836,15 @@ class BladeCompiler extends Compiler implements CompilerInterface {
 		$this->echoFormat = $format;
 	}
 
+    /**
+     * Register a handler for custom directives.
+     *
+     * @param  string  $name
+     * @param  callable  $handler
+     * @return void
+     */
+    public function directive($name, callable $handler)
+    {
+        $this->customDirectives[$name] = $handler;
+    }
 }
