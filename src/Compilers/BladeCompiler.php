@@ -2,8 +2,13 @@
 
 use Nano7\Foundation\Support\Arr;
 use Nano7\Foundation\Support\Str;
+use Nano7\View\Compilers\Concerns\CompilesRawPhp;
+use Nano7\View\Compilers\Concerns\CompilesComments;
 
-class BladeCompiler extends Compiler implements CompilerInterface {
+class BladeCompiler extends Compiler implements CompilerInterface
+{
+    use CompilesRawPhp;
+    use CompilesComments;
 
 	/**
 	 * All of the registered extensions.
@@ -189,19 +194,6 @@ class BladeCompiler extends Compiler implements CompilerInterface {
 		}
 
 		return $value;
-	}
-
-	/**
-	 * Compile Blade comments into valid PHP.
-	 *
-	 * @param  string  $value
-	 * @return string
-	 */
-	protected function compileComments($value)
-	{
-		$pattern = sprintf('/%s--((.|\s)*?)--%s/', $this->contentTags[0], $this->contentTags[1]);
-
-		return preg_replace($pattern, '<?php /*$1*/ ?>', $value);
 	}
 
 	/**
