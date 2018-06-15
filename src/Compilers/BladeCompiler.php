@@ -139,6 +139,11 @@ class BladeCompiler extends Compiler implements CompilerInterface
 
 		$this->footer = [];
 
+        // Block raw php
+        if (strpos($value, '@php') !== false) {
+            $value = $this->storePhpBlocks($value);
+        }
+
 		// Here we will loop through all of the tokens returned by the Zend lexer and
 		// parse each one into the corresponding valid PHP. We will then have this
 		// template as the correctly rendered PHP that can be rendered natively.
@@ -278,6 +283,19 @@ class BladeCompiler extends Compiler implements CompilerInterface
         }
 
         return call_user_func($this->customDirectives[$name], trim($value));
+    }
+
+    /**
+     * Store the PHP blocks and replace them with a temporary placeholder.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    protected function storePhpBlocks($value)
+    {
+        return preg_replace_callback('/(?<!@)@php(.*?)@endphp/s', function ($matches) {
+            return "<?php{$matches[1]}?>";
+        }, $value);
     }
 
 	/**
