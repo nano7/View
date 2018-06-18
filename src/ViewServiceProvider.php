@@ -126,6 +126,8 @@ class ViewServiceProvider extends ServiceProvider {
 
 			return $env;
 		});
+
+        $this->app->alias('view', 'Nano7\View\Factory');
 	}
 
     /**
