@@ -38,7 +38,7 @@ class ShareErrorsFromSession
         // without having to bind. An empty bag is set when there aren't errors.
         $errors = $request->session()->flash('errors');
         if (! is_null($errors) && is_array($errors)) {
-            $errors = new MessageBag(json_decode($errors[0], true));
+            $errors = new MessageBag($errors);
         } else {
             $errors = new MessageBag();
         }
