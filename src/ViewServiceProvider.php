@@ -20,6 +20,8 @@ class ViewServiceProvider extends ServiceProvider {
 		$this->registerViewFinder();
 
 		$this->registerFactory();
+
+        $this->registerMiddlewares();
 	}
 
 	/**
@@ -126,4 +128,17 @@ class ViewServiceProvider extends ServiceProvider {
 		});
 	}
 
+    /**
+     * Register middlewares.
+     *
+     * @return void
+     */
+    protected function registerMiddlewares()
+    {
+        event()->listen('web.middleware.register', function ($web) {
+
+            $web->middleware('share.errors', '\Nano7\View\Middlewares\ShareErrorsFromSession');
+            $web->alias('share.errors');
+        });
+    }
 }
