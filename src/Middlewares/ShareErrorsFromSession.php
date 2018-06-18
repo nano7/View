@@ -36,7 +36,13 @@ class ShareErrorsFromSession
         // If the current session has an "errors" variable bound to it, we will share
         // its value with all view instances so the views can easily access errors
         // without having to bind. An empty bag is set when there aren't errors.
-        $this->view->share('errors', $request->session()->flash('errors') ?: new MessageBag());
+        $errors = $request->session()->flash('errors');
+        if (! is_null($errors) && is_array($errors)) {
+            $errors = new MessageBag(json_decode($errors[0], true));
+        } else {
+            $errors = new MessageBag();
+        }
+        $this->view->share('errors', $errors);
 
         // Putting the errors in the view for every view allows the developer to just
         // assume that some errors are always available, which is convenient since
