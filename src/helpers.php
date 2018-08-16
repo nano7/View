@@ -20,3 +20,23 @@ if (! function_exists('view')) {
         return $factory->make($view, $data, $mergeData);
     }
 }
+
+if (! function_exists('frames')) {
+    /**
+     * @param null $frame
+     * @param array $payload
+     * @param bool $echo
+     * @param bool $separator
+     * @return \Nano7\View\Frames\Frames|array|null
+     */
+    function frames($frame = null, $payload = [], $echo = false, $separator = null)
+    {
+        $frames = app('frames');
+
+        if (is_null($frame)) {
+            return $frames;
+        }
+
+        return $frames->render($frame, $payload, $echo, $separator);
+    }
+}

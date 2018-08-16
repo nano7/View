@@ -5,6 +5,7 @@ use Nano7\View\Engines\CompilerEngine;
 use Nano7\View\Engines\EngineResolver;
 use Nano7\View\Compilers\BladeCompiler;
 use Nano7\Foundation\Support\ServiceProvider;
+use Nano7\View\Frames\Frames;
 
 class ViewServiceProvider extends ServiceProvider {
 
@@ -20,6 +21,8 @@ class ViewServiceProvider extends ServiceProvider {
 		$this->registerViewFinder();
 
 		$this->registerFactory();
+
+        $this->registerFrames();
 
         $this->registerMiddlewares();
 	}
@@ -75,12 +78,19 @@ class ViewServiceProvider extends ServiceProvider {
 		{
 			$cache = $app['config']['view.compiled'];
 
-			return new BladeCompiler($app['files'], $cache);
+            $blade = new BladeCompiler($app['files'], $cache);
+
+            // Add frames
+            $blade->directive('frame', function ($expression) {
+                return "<?php echo frames($expression); ?>";
+            });
+
+            return $blade;
 		});
 
 		$resolver->register('blade', function() use ($app)
 		{
-			return new CompilerEngine($app['blade.compiler'], $app['files']);
+            return new CompilerEngine($app['blade.compiler'], $app['files']);
 		});
 	}
 
@@ -129,6 +139,16 @@ class ViewServiceProvider extends ServiceProvider {
 
         $this->app->alias('view', 'Nano7\View\Factory');
 	}
+
+    /**
+     * Register frames.
+     */
+    protected function registerFrames()
+    {
+        $this->app->singleton('frames', function ($app) {
+            return new Frames($app);
+        });
+    }
 
     /**
      * Register middlewares.
