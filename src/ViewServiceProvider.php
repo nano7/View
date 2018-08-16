@@ -146,7 +146,15 @@ class ViewServiceProvider extends ServiceProvider {
     protected function registerFrames()
     {
         $this->app->singleton('frames', function ($app) {
-            return new Frames($app);
+            $frames = new Frames($app);
+
+            // Carregar frames pelo arquivo
+            $frames_file = app_path('frames.php');
+            if (file_exists($frames_file)) {
+                require $frames_file;
+            }
+
+            return $frames;
         });
     }
 
