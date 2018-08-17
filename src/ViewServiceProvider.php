@@ -166,12 +166,8 @@ class ViewServiceProvider extends ServiceProvider {
     protected function registerMiddlewares()
     {
         event()->listen('web.middleware.register', function ($web) {
-
             $web->middleware('share.errors', '\Nano7\View\Middlewares\ShareErrorsFromSession');
-            $web->alias('share.errors');
-
             $web->middleware('share.status', '\Nano7\View\Middlewares\ShareStatusFromSession');
-            $web->alias('share.status');
         });
     }
 }
