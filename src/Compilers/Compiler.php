@@ -1,6 +1,6 @@
 <?php namespace Nano7\View\Compilers;
 
-use Nano7\Foundation\Support\Filesystem;
+use Nano7\Support\Filesystem;
 
 abstract class Compiler {
 

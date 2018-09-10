@@ -1,7 +1,7 @@
 <?php namespace Nano7\View\Compilers;
 
-use Nano7\Foundation\Support\Arr;
-use Nano7\Foundation\Support\Str;
+use Nano7\Support\Arr;
+use Nano7\Support\Str;
 use Nano7\View\Compilers\Concerns\CompilesRawPhp;
 use Nano7\View\Compilers\Concerns\CompilesComments;
 

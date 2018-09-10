@@ -1,7 +1,7 @@
 <?php namespace Nano7\View;
 
+use Nano7\Support\Filesystem;
 use InvalidArgumentException;
-use Nano7\Foundation\Support\Filesystem;
 
 class FileViewFinder implements ViewFinderInterface {
 
